@@ -5,13 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delivery Calculator</title>
   <style>
+    /* Dark Mode Theme Variables (Default) */
     :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --border: #334155;
+      --input-bg: #0f172a;
+      --profit-green: #22c55e;
+      --loss-red: #ef4444;
+      --section-bg: #0f172a;
+    }
+
+    /* Light Mode Overrides */
+    [data-theme="light"] {
       --bg-color: #f4f6f8;
       --card-bg: #ffffff;
       --text-main: #1f2937;
       --text-muted: #6b7280;
       --primary: #2563eb;
       --border: #e5e7eb;
+      --input-bg: #ffffff;
       --profit-green: #16a34a;
       --loss-red: #dc2626;
       --section-bg: #f8fafc;
@@ -22,6 +38,7 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
     }
 
     body {
@@ -37,15 +54,36 @@
       width: 100%;
       max-width: 460px;
       border-radius: 16px;
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Header & Theme Toggle */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
     }
 
     h1 {
-      font-size: 1.5rem;
-      text-align: center;
-      margin-bottom: 16px;
+      font-size: 1.4rem;
       color: var(--text-main);
+    }
+
+    .theme-toggle-btn {
+      background: var(--section-bg);
+      border: 2px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      outline: none;
     }
 
     /* 2-Column Grid Layout for Inputs */
@@ -113,8 +151,8 @@
       border: 2px solid var(--border);
       border-radius: 10px;
       outline: none;
-      transition: border-color 0.2s;
-      background: #fff;
+      background: var(--input-bg);
+      color: var(--text-main);
     }
 
     input[type="number"]:focus {
@@ -206,7 +244,13 @@
 <body>
 
   <div class="calculator-card">
-    <h1>Delivery Calculator</h1>
+    <!-- Header with Dark/Light Toggle -->
+    <div class="header-bar">
+      <h1>Delivery Calculator</h1>
+      <button type="button" class="theme-toggle-btn" id="theme-btn">
+        <span id="theme-icon">🌙</span> <span id="theme-text">Dark</span>
+      </button>
+    </div>
 
     <div class="form-grid">
       <!-- Section Header -->
@@ -327,11 +371,37 @@
     const hourlyRateEl = document.getElementById('hourly-rate');
     const netProfitEl = document.getElementById('net-profit');
 
-    // Load saved vehicle data from local storage
+    const themeBtn = document.getElementById('theme-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    // Theme Selector Logic
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark';
+      }
+      localStorage.setItem('theme', theme);
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      setTheme(currentTheme === 'light' ? 'dark' : 'light');
+    });
+
+    // Load saved settings & theme from local storage
     function loadSavedSettings() {
       if (localStorage.getItem('gasPrice')) gasPriceInput.value = localStorage.getItem('gasPrice');
       if (localStorage.getItem('mpg')) mpgInput.value = localStorage.getItem('mpg');
       if (localStorage.getItem('maint')) maintInput.value = localStorage.getItem('maint');
+      
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      setTheme(savedTheme);
     }
 
     // Save vehicle data to local storage
@@ -398,3 +468,4 @@
   </script>
 </body>
 </html>
+          
