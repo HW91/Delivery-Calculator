@@ -230,7 +230,7 @@
 
     .profit-positive { color: var(--profit-green); }
     .profit-negative { color: var(--loss-red); }
-    .hourly-rate-highlight { color: var(--primary); font-size: 1.35rem;}
+    .hourly-rate-highlight { color: var(--primary); font-size: 1.25rem;}
 
     .save-badge {
       display: block;
@@ -261,7 +261,7 @@
         <label for="payout">Offer Pay</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
-          <input type="number" id="payout" class="has-prefix" step="0.01" value="8.00" placeholder="0.00">
+          <input type="number" id="payout" class="has-prefix" step="0.01" value="16.38" placeholder="0.00">
         </div>
       </div>
 
@@ -269,7 +269,7 @@
       <div class="input-group">
         <label for="miles">Distance</label>
         <div class="input-wrapper">
-          <input type="number" id="miles" class="has-suffix" step="0.1" value="5.0" placeholder="0">
+          <input type="number" id="miles" class="has-suffix" step="0.1" value="12.8" placeholder="0">
           <span class="suffix">mi</span>
         </div>
       </div>
@@ -287,7 +287,7 @@
       <div class="input-group">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
-          <input type="number" id="time" class="has-suffix" step="1" value="21" placeholder="0">
+          <input type="number" id="time" class="has-suffix" step="1" value="53" placeholder="0">
           <span class="suffix">min</span>
         </div>
       </div>
@@ -303,7 +303,7 @@
         <label for="gasPrice">Gas Price</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
-          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.99" placeholder="0.00">
+          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.85" placeholder="0.00">
         </div>
       </div>
 
@@ -331,23 +331,27 @@
     <div class="results-container">
       <div class="result-row">
         <span class="result-label">Total Est. Distance:</span>
-        <span class="result-val" id="total-miles">7.5 mi</span>
+        <span class="result-val" id="total-miles">19.2 mi</span>
       </div>
       <div class="result-row">
         <span class="result-label">Fuel + Maint Cost:</span>
-        <span class="result-val profit-negative" id="total-expenses">-$3.05</span>
+        <span class="result-val profit-negative" id="total-expenses">-$7.61</span>
       </div>
       <div class="result-row">
         <span class="result-label">Gross Pay / Mile:</span>
-        <span class="result-val" id="pay-per-mile">$1.07/mi</span>
+        <span class="result-val" id="pay-per-mile">$0.85/mi</span>
       </div>
       <div class="result-row">
-        <span class="result-label">Est. Hourly Rate:</span>
-        <span class="result-val hourly-rate-highlight" id="hourly-rate">$14.14/hr</span>
+        <span class="result-label">Gross Hourly Rate:</span>
+        <span class="result-val hourly-rate-highlight" id="gross-hourly-rate">$18.54/hr</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Net Hourly Rate:</span>
+        <span class="result-val hourly-rate-highlight" id="net-hourly-rate">$9.93/hr</span>
       </div>
       <div class="result-row main-result">
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
-        <span class="net-profit profit-positive" id="net-profit">$4.95</span>
+        <span class="net-profit profit-positive" id="net-profit">$8.77</span>
       </div>
     </div>
     
@@ -368,7 +372,8 @@
     const totalMilesEl = document.getElementById('total-miles');
     const totalExpensesEl = document.getElementById('total-expenses');
     const payPerMileEl = document.getElementById('pay-per-mile');
-    const hourlyRateEl = document.getElementById('hourly-rate');
+    const grossHourlyRateEl = document.getElementById('gross-hourly-rate');
+    const netHourlyRateEl = document.getElementById('net-hourly-rate');
     const netProfitEl = document.getElementById('net-profit');
 
     const themeBtn = document.getElementById('theme-btn');
@@ -444,14 +449,19 @@
       // Profitability
       const netProfit = payout - totalExpenses;
       const grossPayPerMile = totalMiles > 0 ? (payout / totalMiles) : 0;
-      const hourlyRate = tripMinutes > 0 ? (netProfit / (tripMinutes / 60)) : 0;
+      
+      // Hourly Rates (Gross vs Net)
+      const hours = tripMinutes > 0 ? (tripMinutes / 60) : 0;
+      const grossHourlyRate = hours > 0 ? (payout / hours) : 0;
+      const netHourlyRate = hours > 0 ? (netProfit / hours) : 0;
 
       // Update UI
       totalMilesEl.textContent = `${totalMiles.toFixed(1)} mi`;
       totalExpensesEl.textContent = `-$${totalExpenses.toFixed(2)}`;
       payPerMileEl.textContent = `$${grossPayPerMile.toFixed(2)}/mi`;
       
-      hourlyRateEl.textContent = `$${hourlyRate.toFixed(2)}/hr`;
+      grossHourlyRateEl.textContent = `$${grossHourlyRate.toFixed(2)}/hr`;
+      netHourlyRateEl.textContent = `$${netHourlyRate.toFixed(2)}/hr`;
       
       netProfitEl.textContent = `$${netProfit.toFixed(2)}`;
       if (netProfit < 0) {
@@ -484,9 +494,7 @@
     });
 
     // Initial calculations on page load
-    updateEstimatedTime();
     calculate();
   </script>
 </body>
 </html>
-            
