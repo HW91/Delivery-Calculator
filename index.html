@@ -55,6 +55,13 @@
       gap: 12px;
     }
 
+    /* 3-Column Grid Layout for Vehicle Expenses */
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
     .full-width {
       grid-column: span 2;
     }
@@ -75,7 +82,7 @@
 
     label {
       display: block;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--text-main);
@@ -90,19 +97,19 @@
 
     .prefix, .suffix {
       position: absolute;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
-    .prefix { left: 10px; }
-    .suffix { right: 10px; }
+    .prefix { left: 8px; }
+    .suffix { right: 8px; }
 
     input[type="number"] {
       width: 100%;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      padding: 10px 10px;
+      padding: 10px 6px;
       border: 2px solid var(--border);
       border-radius: 10px;
       outline: none;
@@ -114,9 +121,9 @@
       border-color: var(--primary);
     }
 
-    .has-prefix { padding-left: 26px !important; }
-    .has-suffix { padding-right: 48px !important; }
-    .has-both { padding-left: 26px !important; padding-right: 48px !important; }
+    .has-prefix { padding-left: 22px !important; }
+    .has-suffix { padding-right: 40px !important; }
+    .has-both { padding-left: 22px !important; padding-right: 36px !important; }
 
     .slider-header {
       display: flex;
@@ -243,7 +250,10 @@
 
       <!-- Section Header -->
       <div class="section-title full-width">Vehicle Expenses (Auto-Saved)</div>
+    </div>
 
+    <!-- 3-Column Row for Vehicle Expenses -->
+    <div class="vehicle-grid" style="margin-top: 12px;">
       <!-- Gas Price -->
       <div class="input-group">
         <label for="gasPrice">Gas Price</label>
@@ -262,9 +272,9 @@
         </div>
       </div>
 
-      <!-- Maintenance / Depreciation (Full Width for clear label reading) -->
-      <div class="input-group full-width">
-        <label for="maint">Maintenance/Wear Cost</label>
+      <!-- Wear Cost -->
+      <div class="input-group">
+        <label for="maint">Wear Cost</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
           <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00">
@@ -388,4 +398,3 @@
   </script>
 </body>
 </html>
-          
