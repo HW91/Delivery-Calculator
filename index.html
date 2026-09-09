@@ -125,7 +125,7 @@
     }
 
     .slider-value {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--primary);
     }
@@ -136,7 +136,7 @@
       border-radius: 4px;
       background: var(--border);
       outline: none;
-      margin-top: 6px;
+      margin-top: 14px;
       accent-color: var(--primary);
     }
 
@@ -223,18 +223,18 @@
         </div>
       </div>
 
-      <!-- Deadhead Slider (Full Width inside Grid) -->
-      <div class="input-group full-width">
+      <!-- Deadhead Slider (Left Column) -->
+      <div class="input-group">
         <div class="slider-header">
-          <label for="deadhead">Deadhead Return</label>
+          <label for="deadhead">Deadhead</label>
           <span class="slider-value" id="deadhead-val">+50%</span>
         </div>
         <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
       </div>
 
-      <!-- Estimated Time (Full Width inside Grid) -->
-      <div class="input-group full-width">
-        <label for="time">Est. Time (Wait + Drive)</label>
+      <!-- Estimated Time (Right Column, Same Row) -->
+      <div class="input-group">
+        <label for="time">Est. Time</label>
         <div class="input-wrapper">
           <input type="number" id="time" class="has-suffix" step="1" value="25" placeholder="0">
           <span class="suffix">min</span>
@@ -387,5 +387,5 @@
     calculate();
   </script>
 </body>
-  </html>
-  
+</html>
+          
