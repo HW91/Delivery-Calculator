@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Profit Calculator</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --primary: #2563eb;
+      --border: #e5e7eb;
+      --profit-green: #16a34a;
+      --loss-red: #dc2626;
+      --section-bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .calculator-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 440px;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 20px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .prefix, .suffix {
+      position: absolute;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .prefix { left: 14px; }
+    .suffix { right: 14px; }
+
+    input[type="number"] {
+      width: 100%;
+      font-size: 1.35rem;
+      font-weight: 600;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--primary);
+    }
+
+    .has-prefix { padding-left: 32px !important; }
+    .has-suffix { padding-right: 54px !important; }
+    .has-both { padding-left: 32px !important; padding-right: 54px !important; }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+      outline: none;
+      margin-top: 8px;
+      accent-color: var(--primary);
+    }
+
+    .results-container {
+      margin-top: 24px;
+      background: var(--section-bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.05rem;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-row.main-result {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 2px dashed var(--border);
+    }
+
+    .result-label {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .result-val {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .net-profit {
+      font-size: 1.75rem;
+      font-weight: 800;
+    }
+
+    .profit-positive { color: var(--profit-green); }
+    .profit-negative { color: var(--loss-red); }
+    .hourly-rate-highlight { color: var(--primary); font-size: 1.35rem;}
+
+    .save-badge {
+      display: block;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator-card">
+    <h1>Delivery Profit Calc</h1>
+
+    <div class="section-title">Trip Details</div>
+    <!-- Payout -->
+    <div class="input-group">
+      <label for="payout">Offer Payout</label>
+      <div class="input-wrapper">
+        <span class="prefix">$</span>
+        <input type="number" id="payout" class="has-prefix" step="0.01" value="8.95" placeholder="0.00">
+      </div>
+    </div>
+
+    <!-- Base Trip Distance -->
+    <div class="input-group">
+      <label for="miles">Delivery Distance</label>
+      <div class="input-wrapper">
+        <input type="number" id="miles" class="has-suffix" step="0.1" value="7.0" placeholder="0">
+        <span class="suffix">mi</span>
+      </div>
+    </div>
+
+    <!-- Deadhead Slider -->
+    <div class="input-group">
+      <div class="slider-header">
+        <label for="deadhead">Deadhead Return</label>
+        <span class="slider-value" id="deadhead-val">+50%</span>
+      </div>
+      <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
+    </div>
+
+    <!-- Estimated Time -->
+    <div class="input-group">
+      <label for="time">Est. Time (Wait + Drive)</label>
+      <div class="input-wrapper">
+        <input type="number" id="time" class="has-suffix" step="1" value="25" placeholder="0">
+        <span class="suffix">min</span>
+      </div>
+    </div>
+
+    <div class="section-title">Vehicle Expenses (Auto-Saved)</div>
+    <!-- Gas Price -->
+    <div class="input-group">
+      <label for="gasPrice">Gas Price</label>
+      <div class="input-wrapper">
+        <span class="prefix">$</span>
+        <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.30" placeholder="0.00">
+      </div>
+    </div>
+
+    <!-- Vehicle MPG -->
+    <div class="input-group">
+      <label for="mpg">Vehicle MPG</label>
+      <div class="input-wrapper">
+        <input type="number" id="mpg" class="has-suffix auto-save" step="0.1" value="30.0" placeholder="0">
+        <span class="suffix">mpg</span>
+      </div>
+    </div>
+
+    <!-- Maintenance / Depreciation -->
+    <div class="input-group">
+      <label for="maint">Maintenance/Wear Cost</label>
+      <div class="input-wrapper">
+        <span class="prefix">$</span>
+        <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00">
+        <span class="suffix">/mi</span>
+      </div>
+    </div>
+
+    <!-- Summary Outputs -->
+    <div class="results-container">
+      <div class="result-row">
+        <span class="result-label">Total Est. Distance:</span>
+        <span class="result-val" id="total-miles">10.5 mi</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Fuel + Maint Cost:</span>
+        <span class="result-val profit-negative" id="total-expenses">-$2.20</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Gross Pay / Mile:</span>
+        <span class="result-val" id="pay-per-mile">$0.85/mi</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Est. Hourly Rate:</span>
+        <span class="result-val hourly-rate-highlight" id="hourly-rate">$16.18/hr</span>
+      </div>
+      <div class="result-row main-result">
+        <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
+        <span class="net-profit profit-positive" id="net-profit">$6.75</span>
+      </div>
+    </div>
+    
+    <span class="save-badge">Vehicle specs auto-save to this device ✓</span>
+  </div>
+
+  <script>
+    const payoutInput = document.getElementById('payout');
+    const milesInput = document.getElementById('miles');
+    const deadheadInput = document.getElementById('deadhead');
+    const timeInput = document.getElementById('time');
+    
+    const deadheadVal = document.getElementById('deadhead-val');
+    const gasPriceInput = document.getElementById('gasPrice');
+    const mpgInput = document.getElementById('mpg');
+    const maintInput = document.getElementById('maint');
+
+    const totalMilesEl = document.getElementById('total-miles');
+    const totalExpensesEl = document.getElementById('total-expenses');
+    const payPerMileEl = document.getElementById('pay-per-mile');
+    const hourlyRateEl = document.getElementById('hourly-rate');
+    const netProfitEl = document.getElementById('net-profit');
+
+    // Load saved vehicle data from local storage
+    function loadSavedSettings() {
+      if (localStorage.getItem('gasPrice')) gasPriceInput.value = localStorage.getItem('gasPrice');
+      if (localStorage.getItem('mpg')) mpgInput.value = localStorage.getItem('mpg');
+      if (localStorage.getItem('maint')) maintInput.value = localStorage.getItem('maint');
+    }
+
+    // Save vehicle data to local storage
+    function saveSettings() {
+      localStorage.setItem('gasPrice', gasPriceInput.value);
+      localStorage.setItem('mpg', mpgInput.value);
+      localStorage.setItem('maint', maintInput.value);
+    }
+
+    function calculate() {
+      const payout = parseFloat(payoutInput.value) || 0;
+      const baseMiles = parseFloat(milesInput.value) || 0;
+      const deadheadPct = parseFloat(deadheadInput.value) || 0;
+      const tripMinutes = parseFloat(timeInput.value) || 0;
+      
+      const gasPrice = parseFloat(gasPriceInput.value) || 0;
+      const mpg = parseFloat(mpgInput.value) || 0;
+      const maintCostPerMile = parseFloat(maintInput.value) || 0;
+
+      // Update slider label
+      deadheadVal.textContent = `+${deadheadPct}%`;
+
+      // Core Math
+      const totalMiles = baseMiles * (1 + (deadheadPct / 100));
+      
+      // Expenses
+      const fuelCost = mpg > 0 ? (totalMiles / mpg) * gasPrice : 0;
+      const maintCost = totalMiles * maintCostPerMile;
+      const totalExpenses = fuelCost + maintCost;
+      
+      // Profitability
+      const netProfit = payout - totalExpenses;
+      const grossPayPerMile = totalMiles > 0 ? (payout / totalMiles) : 0;
+      const hourlyRate = tripMinutes > 0 ? (netProfit / (tripMinutes / 60)) : 0;
+
+      // Update UI
+      totalMilesEl.textContent = `${totalMiles.toFixed(1)} mi`;
+      totalExpensesEl.textContent = `-$${totalExpenses.toFixed(2)}`;
+      payPerMileEl.textContent = `$${grossPayPerMile.toFixed(2)}/mi`;
+      
+      hourlyRateEl.textContent = `$${hourlyRate.toFixed(2)}/hr`;
+      
+      netProfitEl.textContent = `$${netProfit.toFixed(2)}`;
+      if (netProfit < 0) {
+        netProfitEl.className = 'net-profit profit-negative';
+      } else {
+        netProfitEl.className = 'net-profit profit-positive';
+      }
+
+      // Save persistent inputs automatically
+      saveSettings();
+    }
+
+    // Initialize
+    loadSavedSettings();
+
+    // Event Listeners for real-time updating
+    [payoutInput, milesInput, deadheadInput, timeInput, gasPriceInput, mpgInput, maintInput].forEach(element => {
+      element.addEventListener('input', calculate);
+    });
+
+    // Run once on load
+    calculate();
+  </script>
+</body>
+  </html>
+          
