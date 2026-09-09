@@ -35,7 +35,7 @@
     .calculator-card {
       background: var(--card-bg);
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       border-radius: 16px;
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -44,29 +44,42 @@
     h1 {
       font-size: 1.5rem;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       color: var(--text-main);
     }
 
+    /* 2-Column Grid Layout for Inputs */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
     .section-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: var(--text-main);
-      margin: 20px 0 12px;
+      margin-top: 8px;
       padding-bottom: 6px;
       border-bottom: 2px solid var(--border);
     }
 
     .input-group {
-      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
     }
 
     label {
       display: block;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--text-main);
+      white-space: nowrap;
     }
 
     .input-wrapper {
@@ -77,19 +90,19 @@
 
     .prefix, .suffix {
       position: absolute;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
-    .prefix { left: 14px; }
-    .suffix { right: 14px; }
+    .prefix { left: 10px; }
+    .suffix { right: 10px; }
 
     input[type="number"] {
       width: 100%;
-      font-size: 1.35rem;
-      font-weight: 600;
-      padding: 12px 14px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      padding: 10px 10px;
       border: 2px solid var(--border);
       border-radius: 10px;
       outline: none;
@@ -101,9 +114,9 @@
       border-color: var(--primary);
     }
 
-    .has-prefix { padding-left: 32px !important; }
-    .has-suffix { padding-right: 54px !important; }
-    .has-both { padding-left: 32px !important; padding-right: 54px !important; }
+    .has-prefix { padding-left: 26px !important; }
+    .has-suffix { padding-right: 48px !important; }
+    .has-both { padding-left: 26px !important; padding-right: 48px !important; }
 
     .slider-header {
       display: flex;
@@ -112,7 +125,7 @@
     }
 
     .slider-value {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--primary);
     }
@@ -123,12 +136,13 @@
       border-radius: 4px;
       background: var(--border);
       outline: none;
-      margin-top: 8px;
+      margin-top: 6px;
       accent-color: var(--primary);
     }
 
+    /* Single Column Results Section */
     .results-container {
-      margin-top: 24px;
+      margin-top: 20px;
       background: var(--section-bg);
       border: 2px solid var(--border);
       border-radius: 12px;
@@ -178,7 +192,7 @@
       text-align: center;
       font-size: 0.85rem;
       color: var(--text-muted);
-      margin-top: 16px;
+      margin-top: 12px;
     }
   </style>
 </head>
@@ -187,73 +201,79 @@
   <div class="calculator-card">
     <h1>Delivery Profit Calc</h1>
 
-    <div class="section-title">Trip Details</div>
-    <!-- Payout -->
-    <div class="input-group">
-      <label for="payout">Offer Payout</label>
-      <div class="input-wrapper">
-        <span class="prefix">$</span>
-        <input type="number" id="payout" class="has-prefix" step="0.01" value="8.95" placeholder="0.00">
+    <div class="form-grid">
+      <!-- Section Header -->
+      <div class="section-title full-width">Trip Details</div>
+
+      <!-- Payout -->
+      <div class="input-group">
+        <label for="payout">Offer Pay</label>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="payout" class="has-prefix" step="0.01" value="8.95" placeholder="0.00">
+        </div>
+      </div>
+
+      <!-- Distance -->
+      <div class="input-group">
+        <label for="miles">Distance</label>
+        <div class="input-wrapper">
+          <input type="number" id="miles" class="has-suffix" step="0.1" value="7.0" placeholder="0">
+          <span class="suffix">mi</span>
+        </div>
+      </div>
+
+      <!-- Deadhead Slider (Full Width inside Grid) -->
+      <div class="input-group full-width">
+        <div class="slider-header">
+          <label for="deadhead">Deadhead Return</label>
+          <span class="slider-value" id="deadhead-val">+50%</span>
+        </div>
+        <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
+      </div>
+
+      <!-- Estimated Time (Full Width inside Grid) -->
+      <div class="input-group full-width">
+        <label for="time">Est. Time (Wait + Drive)</label>
+        <div class="input-wrapper">
+          <input type="number" id="time" class="has-suffix" step="1" value="25" placeholder="0">
+          <span class="suffix">min</span>
+        </div>
+      </div>
+
+      <!-- Section Header -->
+      <div class="section-title full-width">Vehicle Expenses (Auto-Saved)</div>
+
+      <!-- Gas Price -->
+      <div class="input-group">
+        <label for="gasPrice">Gas Price</label>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.85" placeholder="0.00">
+        </div>
+      </div>
+
+      <!-- Vehicle MPG -->
+      <div class="input-group">
+        <label for="mpg">Vehicle MPG</label>
+        <div class="input-wrapper">
+          <input type="number" id="mpg" class="has-suffix auto-save" step="0.1" value="13.0" placeholder="0">
+          <span class="suffix">mpg</span>
+        </div>
+      </div>
+
+      <!-- Maintenance / Depreciation (Full Width for clear label reading) -->
+      <div class="input-group full-width">
+        <label for="maint">Maintenance/Wear Cost</label>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00">
+          <span class="suffix">/mi</span>
+        </div>
       </div>
     </div>
 
-    <!-- Base Trip Distance -->
-    <div class="input-group">
-      <label for="miles">Delivery Distance</label>
-      <div class="input-wrapper">
-        <input type="number" id="miles" class="has-suffix" step="0.1" value="7.0" placeholder="0">
-        <span class="suffix">mi</span>
-      </div>
-    </div>
-
-    <!-- Deadhead Slider -->
-    <div class="input-group">
-      <div class="slider-header">
-        <label for="deadhead">Deadhead Return</label>
-        <span class="slider-value" id="deadhead-val">+50%</span>
-      </div>
-      <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
-    </div>
-
-    <!-- Estimated Time -->
-    <div class="input-group">
-      <label for="time">Est. Time (Wait + Drive)</label>
-      <div class="input-wrapper">
-        <input type="number" id="time" class="has-suffix" step="1" value="25" placeholder="0">
-        <span class="suffix">min</span>
-      </div>
-    </div>
-
-    <div class="section-title">Vehicle Expenses (Auto-Saved)</div>
-    <!-- Gas Price -->
-    <div class="input-group">
-      <label for="gasPrice">Gas Price</label>
-      <div class="input-wrapper">
-        <span class="prefix">$</span>
-        <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.30" placeholder="0.00">
-      </div>
-    </div>
-
-    <!-- Vehicle MPG -->
-    <div class="input-group">
-      <label for="mpg">Vehicle MPG</label>
-      <div class="input-wrapper">
-        <input type="number" id="mpg" class="has-suffix auto-save" step="0.1" value="30.0" placeholder="0">
-        <span class="suffix">mpg</span>
-      </div>
-    </div>
-
-    <!-- Maintenance / Depreciation -->
-    <div class="input-group">
-      <label for="maint">Maintenance/Wear Cost</label>
-      <div class="input-wrapper">
-        <span class="prefix">$</span>
-        <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00">
-        <span class="suffix">/mi</span>
-      </div>
-    </div>
-
-    <!-- Summary Outputs -->
+    <!-- Summary Outputs (Single Column Box) -->
     <div class="results-container">
       <div class="result-row">
         <span class="result-label">Total Est. Distance:</span>
@@ -261,7 +281,7 @@
       </div>
       <div class="result-row">
         <span class="result-label">Fuel + Maint Cost:</span>
-        <span class="result-val profit-negative" id="total-expenses">-$2.20</span>
+        <span class="result-val profit-negative" id="total-expenses">-$4.16</span>
       </div>
       <div class="result-row">
         <span class="result-label">Gross Pay / Mile:</span>
@@ -269,11 +289,11 @@
       </div>
       <div class="result-row">
         <span class="result-label">Est. Hourly Rate:</span>
-        <span class="result-val hourly-rate-highlight" id="hourly-rate">$16.18/hr</span>
+        <span class="result-val hourly-rate-highlight" id="hourly-rate">$11.50/hr</span>
       </div>
       <div class="result-row main-result">
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
-        <span class="net-profit profit-positive" id="net-profit">$6.75</span>
+        <span class="net-profit profit-positive" id="net-profit">$4.79</span>
       </div>
     </div>
     
@@ -368,4 +388,4 @@
   </script>
 </body>
   </html>
-          
+  
