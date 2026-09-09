@@ -287,7 +287,7 @@
       <div class="input-group">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
-          <input type="number" id="time" class="has-suffix" step="1" value="25" placeholder="0">
+          <input type="number" id="time" class="has-suffix" step="1" value="14" placeholder="0">
           <span class="suffix">min</span>
         </div>
       </div>
@@ -411,6 +411,12 @@
       localStorage.setItem('maint', maintInput.value);
     }
 
+    // Auto-calculate time when distance changes (Original Miles * 2.75)
+    function updateEstimatedTime() {
+      const baseMiles = parseFloat(milesInput.value) || 0;
+      timeInput.value = Math.round(baseMiles * 2.75);
+    }
+
     function calculate() {
       const payout = parseFloat(payoutInput.value) || 0;
       const baseMiles = parseFloat(milesInput.value) || 0;
@@ -458,12 +464,19 @@
     // Initialize
     loadSavedSettings();
 
+    // Automatically recalculate time on distance input
+    milesInput.addEventListener('input', () => {
+      updateEstimatedTime();
+      calculate();
+    });
+
     // Event Listeners for real-time updating
-    [payoutInput, milesInput, deadheadInput, timeInput, gasPriceInput, mpgInput, maintInput].forEach(element => {
+    [payoutInput, deadheadInput, timeInput, gasPriceInput, mpgInput, maintInput].forEach(element => {
       element.addEventListener('input', calculate);
     });
 
-    // Run once on load
+    // Initial calculations on load
+    updateEstimatedTime();
     calculate();
   </script>
 </body>
