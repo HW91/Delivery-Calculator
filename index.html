@@ -131,6 +131,7 @@
       position: relative;
       display: flex;
       align-items: center;
+      width: 100%;
     }
 
     .prefix, .suffix {
@@ -138,6 +139,7 @@
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-muted);
+      z-index: 1;
     }
 
     .prefix { left: 8px; }
@@ -172,13 +174,15 @@
       background: var(--input-bg);
       overflow: hidden;
       height: 44px;
+      position: relative;
+      width: 100%;
     }
 
     .stepper-btn {
       background: var(--card-bg);
       color: var(--text-main);
       border: none;
-      width: 28px;
+      width: 32px;
       height: 100%;
       font-size: 1.1rem;
       font-weight: 700;
@@ -187,6 +191,8 @@
       align-items: center;
       justify-content: center;
       user-select: none;
+      z-index: 2;
+      flex-shrink: 0;
     }
 
     .stepper-btn:active {
@@ -200,6 +206,7 @@
       padding: 0;
       height: 100%;
       -moz-appearance: textfield;
+      flex-grow: 1;
     }
 
     .stepper-wrapper input[type="number"]::-webkit-outer-spin-button,
@@ -207,6 +214,12 @@
       -webkit-appearance: none;
       margin: 0;
     }
+
+    /* Padding adjustments for input fields inside steppers */
+    .stepper-wrapper .has-prefix { padding-left: 18px !important; text-align: left !important; }
+    .stepper-wrapper .has-suffix { padding-right: 24px !important; text-align: left !important; }
+    .stepper-wrapper .prefix { left: 36px; }
+    .stepper-wrapper .suffix { right: 36px; }
 
     .slider-header {
       display: flex;
@@ -297,25 +310,29 @@
       </button>
     </div>
 
-    <!-- Row 1: Offer Pay & Distance -->
+    <!-- Row 1: Offer Pay & Distance (With Stepper Buttons) -->
     <div class="form-grid">
       <div class="section-title full-width">Trip Details</div>
 
       <!-- Payout -->
       <div class="input-group">
         <label for="payout">Offer Pay</label>
-        <div class="input-wrapper">
+        <div class="stepper-wrapper">
+          <button type="button" class="stepper-btn" id="payout-minus">-</button>
           <span class="prefix">$</span>
           <input type="number" id="payout" class="has-prefix" step="0.01" value="16.38" placeholder="0.00">
+          <button type="button" class="stepper-btn" id="payout-plus">+</button>
         </div>
       </div>
 
       <!-- Distance -->
       <div class="input-group">
         <label for="miles">Distance</label>
-        <div class="input-wrapper">
+        <div class="stepper-wrapper">
+          <button type="button" class="stepper-btn" id="miles-minus">-</button>
           <input type="number" id="miles" class="has-suffix" step="0.1" value="12.8" placeholder="0">
           <span class="suffix">mi</span>
+          <button type="button" class="stepper-btn" id="miles-plus">+</button>
         </div>
       </div>
     </div>
@@ -336,7 +353,7 @@
         <label for="stops">Stops (+5m)</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="stops-minus">-</button>
-          <input type="number" id="stops" min="1" value="1" readonly>
+          <input type="number" id="stops" min="0" value="0" readonly>
           <button type="button" class="stepper-btn" id="stops-plus">+</button>
         </div>
       </div>
@@ -418,7 +435,13 @@
 
   <script>
     const payoutInput = document.getElementById('payout');
+    const payoutMinusBtn = document.getElementById('payout-minus');
+    const payoutPlusBtn = document.getElementById('payout-plus');
+
     const milesInput = document.getElementById('miles');
+    const milesMinusBtn = document.getElementById('miles-minus');
+    const milesPlusBtn = document.getElementById('miles-plus');
+
     const deadheadInput = document.getElementById('deadhead');
     const stopsInput = document.getElementById('stops');
     const stopsMinusBtn = document.getElementById('stops-minus');
@@ -484,7 +507,7 @@
       const stops = parseInt(stopsInput.value) || 0;
       
       const totalMiles = baseMiles * (1 + (deadheadPct / 100));
-      const drivingMinutes = totalMiles * 3;
+      const drivingMinutes = totalMiles * 2.75;
       const stopMinutes = stops * 5;
       
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
@@ -542,6 +565,42 @@
     // Initialize
     loadSavedSettings();
 
+    // Offer Pay Stepper Handlers
+    payoutMinusBtn.addEventListener('click', () => {
+      let currentVal = parseFloat(payoutInput.value) || 0;
+      if (currentVal > 0) {
+        let newVal = Math.floor(currentVal);
+        if (newVal === currentVal) newVal -= 1; // Go down by a full dollar if already whole
+        payoutInput.value = Math.max(0, newVal).toFixed(2);
+        calculate();
+      }
+    });
+
+    payoutPlusBtn.addEventListener('click', () => {
+      let currentVal = parseFloat(payoutInput.value) || 0;
+      let newVal = Math.ceil(currentVal);
+      if (newVal === currentVal) newVal += 1; // Go up by a full dollar if already whole
+      payoutInput.value = newVal.toFixed(2);
+      calculate();
+    });
+
+    // Distance Stepper Handlers
+    milesMinusBtn.addEventListener('click', () => {
+      let currentMiles = parseFloat(milesInput.value) || 0;
+      if (currentMiles > 0) {
+        milesInput.value = Math.max(0, currentMiles - 1).toFixed(1);
+        updateEstimatedTime();
+        calculate();
+      }
+    });
+
+    milesPlusBtn.addEventListener('click', () => {
+      let currentMiles = parseFloat(milesInput.value) || 0;
+      milesInput.value = (currentMiles + 1).toFixed(1);
+      updateEstimatedTime();
+      calculate();
+    });
+
     // Stops plus/minus handlers
     stopsMinusBtn.addEventListener('click', () => {
       let currentStops = parseInt(stopsInput.value) || 0;
@@ -580,4 +639,4 @@
   </script>
 </body>
 </html>
-    
+  
