@@ -353,7 +353,7 @@
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="payout-minus">-</button>
           <span class="prefix">$</span>
-          <input type="number" id="payout" class="has-prefix" step="0.01" value="6.00" placeholder="0.00">
+          <input type="number" id="payout" class="has-prefix" step="0.01" value="7.0" placeholder="0.00">
           <button type="button" class="stepper-btn" id="payout-plus">+</button>
         </div>
       </div>
@@ -363,7 +363,7 @@
         <label for="miles">Distance</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="miles-minus">-</button>
-          <input type="number" id="miles" class="has-suffix" step="0.1" value="4.0" placeholder="0">
+          <input type="number" id="miles" class="has-suffix" step="0.1" value="3.0" placeholder="0">
           <span class="suffix">mi</span>
           <button type="button" class="stepper-btn" id="miles-plus">+</button>
         </div>
@@ -549,7 +549,7 @@
       const stops = parseInt(stopsInput.value) || 0;
       
       const drivingMinutes = baseMiles * 2.75;
-      const stopMinutes = stops * 5;
+      const stopMinutes = stops * 10;
       
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
     }
