@@ -320,7 +320,7 @@
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="payout-minus">-</button>
           <span class="prefix">$</span>
-          <input type="number" id="payout" class="has-prefix" step="0.01" value="6.0" placeholder="0.00">
+          <input type="number" id="payout" class="has-prefix" step="0.01" value="16.38" placeholder="0.00">
           <button type="button" class="stepper-btn" id="payout-plus">+</button>
         </div>
       </div>
@@ -330,7 +330,7 @@
         <label for="miles">Distance</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="miles-minus">-</button>
-          <input type="number" id="miles" class="has-suffix" step="0.1" value="3.0" placeholder="0">
+          <input type="number" id="miles" class="has-suffix" step="0.1" value="12.8" placeholder="0">
           <span class="suffix">mi</span>
           <button type="button" class="stepper-btn" id="miles-plus">+</button>
         </div>
@@ -348,17 +348,17 @@
         <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
       </div>
 
-      <!-- Extra Stops with Plus/Minus -->
+      <!-- Extra Stops with Plus/Minus (Defaulted to 1) -->
       <div class="input-group">
         <label for="stops">Stops (+5m)</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="stops-minus">-</button>
-          <input type="number" id="stops" min="1" value="1" readonly>
+          <input type="number" id="stops" min="0" value="1" readonly>
           <button type="button" class="stepper-btn" id="stops-plus">+</button>
         </div>
       </div>
 
-      <!-- Estimated Time -->
+      <!-- Estimated Time (Calculated dynamically) -->
       <div class="input-group">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
@@ -366,7 +366,8 @@
           <span class="suffix">min</span>
         </div>
       </div>
-        
+    </div>
+
     <!-- Section Header -->
     <div class="section-title" style="margin-top: 12px;">Vehicle Expenses (Auto-Saved)</div>
 
@@ -405,27 +406,27 @@
     <div class="results-container">
       <div class="result-row">
         <span class="result-label">Total Est. Distance:</span>
-        <span class="result-val" id="total-miles">19.2 mi</span>
+        <span class="result-val" id="total-miles">0 mi</span>
       </div>
       <div class="result-row">
         <span class="result-label">Fuel + Maint Cost:</span>
-        <span class="result-val profit-negative" id="total-expenses">-$8.11</span>
+        <span class="result-val profit-negative" id="total-expenses">-$0.00</span>
       </div>
       <div class="result-row">
         <span class="result-label">Gross Pay / Mile:</span>
-        <span class="result-val" id="pay-per-mile">$0.85/mi</span>
+        <span class="result-val" id="pay-per-mile">$0.00/mi</span>
       </div>
       <div class="result-row">
         <span class="result-label">Gross Hourly Rate:</span>
-        <span class="result-val hourly-rate-highlight" id="gross-hourly-rate">$18.54/hr</span>
+        <span class="result-val hourly-rate-highlight" id="gross-hourly-rate">$0.00/hr</span>
       </div>
       <div class="result-row">
         <span class="result-label">Net Hourly Rate:</span>
-        <span class="result-val hourly-rate-highlight" id="net-hourly-rate">$9.36/hr</span>
+        <span class="result-val hourly-rate-highlight" id="net-hourly-rate">$0.00/hr</span>
       </div>
       <div class="result-row main-result">
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
-        <span class="net-profit profit-positive" id="net-profit">$8.27</span>
+        <span class="net-profit profit-positive" id="net-profit">$0.00</span>
       </div>
     </div>
     
@@ -569,7 +570,7 @@
       let currentVal = parseFloat(payoutInput.value) || 0;
       if (currentVal > 0) {
         let newVal = Math.floor(currentVal);
-        if (newVal === currentVal) newVal -= 1; // Go down by a full dollar if already whole
+        if (newVal === currentVal) newVal -= 1;
         payoutInput.value = Math.max(0, newVal).toFixed(2);
         calculate();
       }
@@ -578,7 +579,7 @@
     payoutPlusBtn.addEventListener('click', () => {
       let currentVal = parseFloat(payoutInput.value) || 0;
       let newVal = Math.ceil(currentVal);
-      if (newVal === currentVal) newVal += 1; // Go up by a full dollar if already whole
+      if (newVal === currentVal) newVal += 1;
       payoutInput.value = newVal.toFixed(2);
       calculate();
     });
@@ -633,9 +634,9 @@
       element.addEventListener('input', calculate);
     });
 
-    // Initial calculations on page load
+    // Dynamic initial calculations on page load
+    updateEstimatedTime();
     calculate();
   </script>
 </body>
 </html>
-  
