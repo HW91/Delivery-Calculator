@@ -86,15 +86,15 @@
       outline: none;
     }
 
-    /* 2-Column Grid Layout for Inputs */
+    /* 2-Column Grid Layout for Offer & Distance */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    /* 3-Column Grid Layout for Vehicle Expenses */
-    .vehicle-grid {
+    /* 3-Column Grid Layout for Deadhead, Stops, Est. Time & Vehicle Expenses */
+    .triple-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
@@ -120,7 +120,7 @@
 
     label {
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--text-main);
@@ -135,19 +135,19 @@
 
     .prefix, .suffix {
       position: absolute;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
     .prefix { left: 8px; }
-    .suffix { right: 8px; }
+    .suffix { right: 6px; }
 
     input[type="number"] {
       width: 100%;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      padding: 10px 6px;
+      padding: 10px 4px;
       border: 2px solid var(--border);
       border-radius: 10px;
       outline: none;
@@ -159,9 +159,9 @@
       border-color: var(--primary);
     }
 
-    .has-prefix { padding-left: 22px !important; }
-    .has-suffix { padding-right: 40px !important; }
-    .has-both { padding-left: 22px !important; padding-right: 36px !important; }
+    .has-prefix { padding-left: 20px !important; }
+    .has-suffix { padding-right: 32px !important; }
+    .has-both { padding-left: 20px !important; padding-right: 32px !important; }
 
     /* Plus/Minus Stepper Controls */
     .stepper-wrapper {
@@ -171,15 +171,16 @@
       border-radius: 10px;
       background: var(--input-bg);
       overflow: hidden;
+      height: 44px;
     }
 
     .stepper-btn {
       background: var(--card-bg);
       color: var(--text-main);
       border: none;
-      width: 38px;
-      height: 42px;
-      font-size: 1.25rem;
+      width: 28px;
+      height: 100%;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -196,7 +197,8 @@
       border: none;
       border-radius: 0;
       text-align: center;
-      padding: 10px 0;
+      padding: 0;
+      height: 100%;
       -moz-appearance: textfield;
     }
 
@@ -213,7 +215,7 @@
     }
 
     .slider-value {
-      font-size: 1rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--primary);
     }
@@ -295,8 +297,8 @@
       </button>
     </div>
 
+    <!-- Row 1: Offer Pay & Distance -->
     <div class="form-grid">
-      <!-- Section Header -->
       <div class="section-title full-width">Trip Details</div>
 
       <!-- Payout -->
@@ -316,7 +318,10 @@
           <span class="suffix">mi</span>
         </div>
       </div>
+    </div>
 
+    <!-- Row 2: 3-Column Layout (Deadhead, Stops, Est. Time) -->
+    <div class="triple-grid" style="margin-top: 12px;">
       <!-- Deadhead Slider -->
       <div class="input-group">
         <div class="slider-header">
@@ -328,7 +333,7 @@
 
       <!-- Extra Stops with Plus/Minus -->
       <div class="input-group">
-        <label for="stops">Stops (+5m ea)</label>
+        <label for="stops">Stops (+5m)</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="stops-minus">-</button>
           <input type="number" id="stops" min="0" value="0" readonly>
@@ -336,27 +341,27 @@
         </div>
       </div>
 
-      <!-- Estimated Time (Full Width below controls) -->
-      <div class="input-group full-width">
+      <!-- Estimated Time -->
+      <div class="input-group">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
           <input type="number" id="time" class="has-suffix" step="1" value="53" placeholder="0">
           <span class="suffix">min</span>
         </div>
       </div>
-
-      <!-- Section Header -->
-      <div class="section-title full-width">Vehicle Expenses (Auto-Saved)</div>
     </div>
 
-    <!-- 3-Column Row for Vehicle Expenses -->
-    <div class="vehicle-grid" style="margin-top: 12px;">
+    <!-- Section Header -->
+    <div class="section-title" style="margin-top: 12px;">Vehicle Expenses (Auto-Saved)</div>
+
+    <!-- Row 3: 3-Column Layout for Vehicle Expenses -->
+    <div class="triple-grid" style="margin-top: 12px;">
       <!-- Gas Price -->
       <div class="input-group">
         <label for="gasPrice">Gas Price</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
-          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="3.85" placeholder="0.00">
+          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="4.19" placeholder="0.00">
         </div>
       </div>
 
@@ -388,7 +393,7 @@
       </div>
       <div class="result-row">
         <span class="result-label">Fuel + Maint Cost:</span>
-        <span class="result-val profit-negative" id="total-expenses">-$7.61</span>
+        <span class="result-val profit-negative" id="total-expenses">-$8.11</span>
       </div>
       <div class="result-row">
         <span class="result-label">Gross Pay / Mile:</span>
@@ -400,11 +405,11 @@
       </div>
       <div class="result-row">
         <span class="result-label">Net Hourly Rate:</span>
-        <span class="result-val hourly-rate-highlight" id="net-hourly-rate">$9.93/hr</span>
+        <span class="result-val hourly-rate-highlight" id="net-hourly-rate">$9.36/hr</span>
       </div>
       <div class="result-row main-result">
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
-        <span class="net-profit profit-positive" id="net-profit">$8.77</span>
+        <span class="net-profit profit-positive" id="net-profit">$8.27</span>
       </div>
     </div>
     
@@ -575,3 +580,4 @@
   </script>
 </body>
 </html>
+    
