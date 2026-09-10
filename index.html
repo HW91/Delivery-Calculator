@@ -163,6 +163,49 @@
     .has-suffix { padding-right: 40px !important; }
     .has-both { padding-left: 22px !important; padding-right: 36px !important; }
 
+    /* Plus/Minus Stepper Controls */
+    .stepper-wrapper {
+      display: flex;
+      align-items: center;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--input-bg);
+      overflow: hidden;
+    }
+
+    .stepper-btn {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: none;
+      width: 38px;
+      height: 42px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .stepper-btn:active {
+      background: var(--border);
+    }
+
+    .stepper-wrapper input[type="number"] {
+      border: none;
+      border-radius: 0;
+      text-align: center;
+      padding: 10px 0;
+      -moz-appearance: textfield;
+    }
+
+    .stepper-wrapper input[type="number"]::-webkit-outer-spin-button,
+    .stepper-wrapper input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
     .slider-header {
       display: flex;
       justify-content: space-between;
@@ -274,7 +317,7 @@
         </div>
       </div>
 
-      <!-- Deadhead Slider (Left Column) -->
+      <!-- Deadhead Slider -->
       <div class="input-group">
         <div class="slider-header">
           <label for="deadhead">Deadhead</label>
@@ -283,8 +326,18 @@
         <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
       </div>
 
-      <!-- Estimated Time (Right Column, Same Row) -->
+      <!-- Extra Stops with Plus/Minus -->
       <div class="input-group">
+        <label for="stops">Stops (+5m ea)</label>
+        <div class="stepper-wrapper">
+          <button type="button" class="stepper-btn" id="stops-minus">-</button>
+          <input type="number" id="stops" min="0" value="0" readonly>
+          <button type="button" class="stepper-btn" id="stops-plus">+</button>
+        </div>
+      </div>
+
+      <!-- Estimated Time (Full Width below controls) -->
+      <div class="input-group full-width">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
           <input type="number" id="time" class="has-suffix" step="1" value="53" placeholder="0">
@@ -362,6 +415,9 @@
     const payoutInput = document.getElementById('payout');
     const milesInput = document.getElementById('miles');
     const deadheadInput = document.getElementById('deadhead');
+    const stopsInput = document.getElementById('stops');
+    const stopsMinusBtn = document.getElementById('stops-minus');
+    const stopsPlusBtn = document.getElementById('stops-plus');
     const timeInput = document.getElementById('time');
     
     const deadheadVal = document.getElementById('deadhead-val');
@@ -416,13 +472,17 @@
       localStorage.setItem('maint', maintInput.value);
     }
 
-    // Auto-calculate time based on Total Miles (Base + Deadhead) * 2.75
+    // Auto-calculate time based on Total Miles * 2.75 + (Stops * 5 mins)
     function updateEstimatedTime() {
       const baseMiles = parseFloat(milesInput.value) || 0;
       const deadheadPct = parseFloat(deadheadInput.value) || 0;
-      const totalMiles = baseMiles * (1 + (deadheadPct / 100));
+      const stops = parseInt(stopsInput.value) || 0;
       
-      timeInput.value = Math.round(totalMiles * 2.75);
+      const totalMiles = baseMiles * (1 + (deadheadPct / 100));
+      const drivingMinutes = totalMiles * 2.75;
+      const stopMinutes = stops * 5;
+      
+      timeInput.value = Math.round(drivingMinutes + stopMinutes);
     }
 
     function calculate() {
@@ -476,6 +536,23 @@
 
     // Initialize
     loadSavedSettings();
+
+    // Stops plus/minus handlers
+    stopsMinusBtn.addEventListener('click', () => {
+      let currentStops = parseInt(stopsInput.value) || 0;
+      if (currentStops > 0) {
+        stopsInput.value = currentStops - 1;
+        updateEstimatedTime();
+        calculate();
+      }
+    });
+
+    stopsPlusBtn.addEventListener('click', () => {
+      let currentStops = parseInt(stopsInput.value) || 0;
+      stopsInput.value = currentStops + 1;
+      updateEstimatedTime();
+      calculate();
+    });
 
     // Recalculate time automatically on distance or deadhead changes
     milesInput.addEventListener('input', () => {
