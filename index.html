@@ -242,8 +242,7 @@
       margin-top: 14px;
       accent-color: var(--primary);
     }
-
-    /* Single Column Results Section */
+        /* Single Column Results Section */
     .results-container {
       margin-top: 20px;
       background: var(--section-bg);
@@ -289,6 +288,40 @@
     .profit-positive { color: var(--profit-green); }
     .profit-negative { color: var(--loss-red); }
     .hourly-rate-highlight { color: var(--primary); font-size: 1.25rem;}
+
+    /* Status Badge Styling */
+    .status-badge {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-green {
+      background-color: rgba(34, 197, 94, 0.15);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+    }
+
+    .status-yellow {
+      background-color: rgba(234, 179, 8, 0.15);
+      border: 2px solid #eab308;
+      color: #eab308;
+    }
+
+    .status-red {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 2px solid #ef4444;
+      color: #ef4444;
+    }
 
     .save-badge {
       display: block;
@@ -428,6 +461,12 @@
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
         <span class="net-profit profit-positive" id="net-profit">$0.00</span>
       </div>
+
+      <!-- Traffic Light Indicator -->
+      <div id="status-badge" class="status-badge status-green">
+        <span id="status-icon">🟢</span>
+        <span id="status-text">Great Order</span>
+      </div>
     </div>
     
     <span class="save-badge">Vehicle specs auto-save to this device ✓</span>
@@ -459,6 +498,10 @@
     const grossHourlyRateEl = document.getElementById('gross-hourly-rate');
     const netHourlyRateEl = document.getElementById('net-hourly-rate');
     const netProfitEl = document.getElementById('net-profit');
+
+    const statusBadgeEl = document.getElementById('status-badge');
+    const statusIconEl = document.getElementById('status-icon');
+    const statusTextEl = document.getElementById('status-text');
 
     const themeBtn = document.getElementById('theme-btn');
     const themeIcon = document.getElementById('theme-icon');
@@ -501,7 +544,6 @@
     }
 
     // Auto-calculate time based strictly on base trip distance + stops.
-    // Excludes deadhead distance from active trip duration.
     function updateEstimatedTime() {
       const baseMiles = parseFloat(milesInput.value) || 0;
       const stops = parseInt(stopsInput.value) || 0;
@@ -510,6 +552,22 @@
       const stopMinutes = stops * 5;
       
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
+    }
+
+    function updateTrafficLight(netHourlyRate, netProfit) {
+      if (netProfit <= 0 || netHourlyRate < 12) {
+        statusBadgeEl.className = 'status-badge status-red';
+        statusIconEl.textContent = '🔴';
+        statusTextEl.textContent = 'Low Profit / Skip';
+      } else if (netHourlyRate >= 12 && netHourlyRate < 20) {
+        statusBadgeEl.className = 'status-badge status-yellow';
+        statusIconEl.textContent = '🟡';
+        statusTextEl.textContent = 'Moderate Profit';
+      } else {
+        statusBadgeEl.className = 'status-badge status-green';
+        statusIconEl.textContent = '🟢';
+        statusTextEl.textContent = 'Great Order';
+      }
     }
 
     function calculate() {
@@ -556,6 +614,9 @@
       } else {
         netProfitEl.className = 'net-profit profit-positive';
       }
+
+      // Update Green/Yellow/Red status indicator
+      updateTrafficLight(netHourlyRate, netProfit);
 
       // Save persistent inputs automatically
       saveSettings();
@@ -639,4 +700,3 @@
   </script>
 </body>
 </html>
-  
