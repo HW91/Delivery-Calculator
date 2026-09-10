@@ -484,7 +484,7 @@
       const stops = parseInt(stopsInput.value) || 0;
       
       const totalMiles = baseMiles * (1 + (deadheadPct / 100));
-      const drivingMinutes = totalMiles * 2.75;
+      const drivingMinutes = totalMiles * 3;
       const stopMinutes = stops * 5;
       
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
