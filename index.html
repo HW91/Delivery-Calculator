@@ -500,15 +500,14 @@
       localStorage.setItem('maint', maintInput.value);
     }
 
-    // Auto-calculate time based on Total Miles * 2.75 + (Stops * 5 mins)
+    // Auto-calculate time based strictly on base trip distance + stops.
+    // Excludes deadhead distance from active trip duration.
     function updateEstimatedTime() {
       const baseMiles = parseFloat(milesInput.value) || 0;
-      const deadheadPct = parseFloat(deadheadInput.value) || 0;
       const stops = parseInt(stopsInput.value) || 0;
       
-      const totalMiles = baseMiles * (1 + (deadheadPct / 100));
-      const drivingMinutes = totalMiles * 2.75;
-      const stopMinutes = stops * 15;
+      const drivingMinutes = baseMiles * 2.75;
+      const stopMinutes = stops * 5;
       
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
     }
@@ -526,7 +525,7 @@
       // Update slider label
       deadheadVal.textContent = `+${deadheadPct}%`;
 
-      // Core Math
+      // Core Math (Total miles includes deadhead for expense calculation)
       const totalMiles = baseMiles * (1 + (deadheadPct / 100));
       
       // Expenses
@@ -538,7 +537,7 @@
       const netProfit = payout - totalExpenses;
       const grossPayPerMile = totalMiles > 0 ? (payout / totalMiles) : 0;
       
-      // Hourly Rates (Gross vs Net)
+      // Hourly Rates (Calculated strictly on estimated active trip time)
       const hours = tripMinutes > 0 ? (tripMinutes / 60) : 0;
       const grossHourlyRate = hours > 0 ? (payout / hours) : 0;
       const netHourlyRate = hours > 0 ? (netProfit / hours) : 0;
@@ -618,14 +617,14 @@
       calculate();
     });
 
-    // Recalculate time automatically on distance or deadhead changes
+    // Recalculate time automatically on distance changes
     milesInput.addEventListener('input', () => {
       updateEstimatedTime();
       calculate();
     });
 
+    // Deadhead changes expenses and net pay, but NOT delivery time
     deadheadInput.addEventListener('input', () => {
-      updateEstimatedTime();
       calculate();
     });
 
@@ -640,3 +639,4 @@
   </script>
 </body>
 </html>
+  
