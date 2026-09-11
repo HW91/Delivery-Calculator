@@ -242,7 +242,8 @@
       margin-top: 14px;
       accent-color: var(--primary);
     }
-        /* Single Column Results Section */
+
+     /* Single Column Results Section */
     .results-container {
       margin-top: 20px;
       background: var(--section-bg);
@@ -353,7 +354,7 @@
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="payout-minus">-</button>
           <span class="prefix">$</span>
-          <input type="number" id="payout" class="has-prefix" step="0.01" value="7.0" placeholder="0.00">
+          <input type="number" id="payout" class="has-prefix" step="0.01" value="7.50" placeholder="0.00">
           <button type="button" class="stepper-btn" id="payout-plus">+</button>
         </div>
       </div>
@@ -383,7 +384,7 @@
 
       <!-- Extra Stops with Plus/Minus (Defaulted to 1) -->
       <div class="input-group">
-        <label for="stops">Stops (+5m)</label>
+        <label for="stops">Stops (+10m)</label>
         <div class="stepper-wrapper">
           <button type="button" class="stepper-btn" id="stops-minus">-</button>
           <input type="number" id="stops" min="0" value="1" readonly>
@@ -472,7 +473,7 @@
     <span class="save-badge">Vehicle specs auto-save to this device ✓</span>
   </div>
 
-  <script>
+    <script>
     const payoutInput = document.getElementById('payout');
     const payoutMinusBtn = document.getElementById('payout-minus');
     const payoutPlusBtn = document.getElementById('payout-plus');
@@ -543,7 +544,7 @@
       localStorage.setItem('maint', maintInput.value);
     }
 
-    // Auto-calculate time based strictly on base trip distance + stops.
+    // Auto-calculate time based strictly on base trip distance + stops (10m per stop).
     function updateEstimatedTime() {
       const baseMiles = parseFloat(milesInput.value) || 0;
       const stops = parseInt(stopsInput.value) || 0;
@@ -554,19 +555,27 @@
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
     }
 
-    function updateTrafficLight(netHourlyRate, netProfit) {
-      if (netProfit <= 0 || netHourlyRate < 12) {
-        statusBadgeEl.className = 'status-badge status-red';
-        statusIconEl.textContent = '🔴';
-        statusTextEl.textContent = 'Low Profit / Skip';
-      } else if (netHourlyRate >= 12 && netHourlyRate < 20) {
+    // Dynamic Traffic Light logic tuned to real-world gig pay standards
+    function updateTrafficLight(netHourlyRate, netProfit, grossPayPerMile) {
+      const isHighProfit = netProfit >= 15.00;
+      const isHighHourly = netHourlyRate >= 18.00;
+      const isGoodPayPerMile = grossPayPerMile >= 1.75 && netProfit >= 3.00;
+
+      const isModerateHourly = netHourlyRate >= 10.00;
+      const isModeratePayPerMile = grossPayPerMile >= 1.25 && netProfit >= 1.50;
+
+      if (netProfit > 0 && (isHighProfit || isHighHourly || isGoodPayPerMile)) {
+        statusBadgeEl.className = 'status-badge status-green';
+        statusIconEl.textContent = '🟢';
+        statusTextEl.textContent = 'Great Order';
+      } else if (netProfit > 0 && (isModerateHourly || isModeratePayPerMile)) {
         statusBadgeEl.className = 'status-badge status-yellow';
         statusIconEl.textContent = '🟡';
         statusTextEl.textContent = 'Moderate Profit';
       } else {
-        statusBadgeEl.className = 'status-badge status-green';
-        statusIconEl.textContent = '🟢';
-        statusTextEl.textContent = 'Great Order';
+        statusBadgeEl.className = 'status-badge status-red';
+        statusIconEl.textContent = '🔴';
+        statusTextEl.textContent = 'Low Profit / Skip';
       }
     }
 
@@ -615,8 +624,8 @@
         netProfitEl.className = 'net-profit profit-positive';
       }
 
-      // Update Green/Yellow/Red status indicator
-      updateTrafficLight(netHourlyRate, netProfit);
+      // Update Green/Yellow/Red status indicator using pay-per-mile ratios
+      updateTrafficLight(netHourlyRate, netProfit, grossPayPerMile);
 
       // Save persistent inputs automatically
       saveSettings();
