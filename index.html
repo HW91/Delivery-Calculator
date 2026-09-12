@@ -93,7 +93,7 @@
       gap: 12px;
     }
 
-    /* 3-Column Grid Layout for Deadhead, Stops, Est. Time & Vehicle Expenses */
+    /* 3-Column Grid Layout for Remote Switch, Stops, Est. Time & Vehicle Expenses */
     .triple-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -221,29 +221,75 @@
     .stepper-wrapper .prefix { left: 36px; }
     .stepper-wrapper .suffix { right: 36px; }
 
-    .slider-header {
+    /* Toggle Switch Styling */
+    .switch-wrapper {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      background: var(--input-bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      height: 44px;
+      padding: 0 8px;
     }
 
-    .slider-value {
-      font-size: 0.85rem;
+    .switch-label-text {
+      font-size: 0.8rem;
       font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .switch-label-text.active {
       color: var(--primary);
     }
 
-    input[type="range"] {
-      width: 100%;
-      height: 8px;
-      border-radius: 4px;
-      background: var(--border);
-      outline: none;
-      margin-top: 14px;
-      accent-color: var(--primary);
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
     }
 
-     /* Single Column Results Section */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .2s;
+      border-radius: 22px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+        /* Single Column Results Section */
     .results-container {
       margin-top: 20px;
       background: var(--section-bg);
@@ -371,15 +417,18 @@
       </div>
     </div>
 
-    <!-- Row 2: 3-Column Layout (Deadhead, Stops, Est. Time) -->
+    <!-- Row 2: 3-Column Layout (Remote Toggle, Stops, Est. Time) -->
     <div class="triple-grid" style="margin-top: 12px;">
-      <!-- Deadhead Slider -->
+      <!-- Remote Location Toggle (+10% OFF / +50% ON) -->
       <div class="input-group">
-        <div class="slider-header">
-          <label for="deadhead">Deadhead</label>
-          <span class="slider-value" id="deadhead-val">+50%</span>
+        <label for="remote-toggle">Remote Drop</label>
+        <div class="switch-wrapper">
+          <span class="switch-label-text" id="remote-status-text">+10%</span>
+          <label class="switch">
+            <input type="checkbox" id="remote-toggle">
+            <span class="slider"></span>
+          </label>
         </div>
-        <input type="range" id="deadhead" min="0" max="100" step="5" value="50">
       </div>
 
       <!-- Extra Stops with Plus/Minus (Defaulted to 1) -->
@@ -482,13 +531,14 @@
     const milesMinusBtn = document.getElementById('miles-minus');
     const milesPlusBtn = document.getElementById('miles-plus');
 
-    const deadheadInput = document.getElementById('deadhead');
+    const remoteToggle = document.getElementById('remote-toggle');
+    const remoteStatusText = document.getElementById('remote-status-text');
+    
     const stopsInput = document.getElementById('stops');
     const stopsMinusBtn = document.getElementById('stops-minus');
     const stopsPlusBtn = document.getElementById('stops-plus');
     const timeInput = document.getElementById('time');
     
-    const deadheadVal = document.getElementById('deadhead-val');
     const gasPriceInput = document.getElementById('gasPrice');
     const mpgInput = document.getElementById('mpg');
     const maintInput = document.getElementById('maint');
@@ -582,17 +632,26 @@
     function calculate() {
       const payout = parseFloat(payoutInput.value) || 0;
       const baseMiles = parseFloat(milesInput.value) || 0;
-      const deadheadPct = parseFloat(deadheadInput.value) || 0;
       const tripMinutes = parseFloat(timeInput.value) || 0;
       
+      // Toggle logic: OFF = +10% deadhead, ON = +50% deadhead
+      const isRemote = remoteToggle.checked;
+      const deadheadPct = isRemote ? 50 : 10;
+      
+      // Update UI text for toggle indicator
+      if (isRemote) {
+        remoteStatusText.textContent = '+50%';
+        remoteStatusText.classList.add('active');
+      } else {
+        remoteStatusText.textContent = '+10%';
+        remoteStatusText.classList.remove('active');
+      }
+
       const gasPrice = parseFloat(gasPriceInput.value) || 0;
       const mpg = parseFloat(mpgInput.value) || 0;
       const maintCostPerMile = parseFloat(maintInput.value) || 0;
 
-      // Update slider label
-      deadheadVal.textContent = `+${deadheadPct}%`;
-
-      // Core Math (Total miles includes deadhead for expense calculation)
+      // Core Math (Total miles includes deadhead percentage for expense calculation)
       const totalMiles = baseMiles * (1 + (deadheadPct / 100));
       
       // Expenses
@@ -687,14 +746,14 @@
       calculate();
     });
 
-    // Recalculate time automatically on distance changes
-    milesInput.addEventListener('input', () => {
-      updateEstimatedTime();
+    // Remote Drop toggle listener
+    remoteToggle.addEventListener('change', () => {
       calculate();
     });
 
-    // Deadhead changes expenses and net pay, but NOT delivery time
-    deadheadInput.addEventListener('input', () => {
+    // Recalculate time automatically on distance changes
+    milesInput.addEventListener('input', () => {
+      updateEstimatedTime();
       calculate();
     });
 
