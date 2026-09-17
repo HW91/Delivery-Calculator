@@ -17,6 +17,10 @@
       --profit-green: #22c55e;
       --loss-red: #ef4444;
       --section-bg: #0f172a;
+
+      /* Dynamic Status Colors */
+      --status-border: var(--border);
+      --status-bg: var(--section-bg);
     }
 
     /* Light Mode Overrides */
@@ -26,11 +30,27 @@
       --text-main: #1f2937;
       --text-muted: #6b7280;
       --primary: #2563eb;
-      --border: #e5e7eb;
+      --border: #cbd5e1;
       --input-bg: #ffffff;
       --profit-green: #16a34a;
       --loss-red: #dc2626;
       --section-bg: #f8fafc;
+    }
+
+    /* Dynamic Profitability Color Themes */
+    .theme-green {
+      --status-border: #22c55e !important;
+      --status-bg: rgba(34, 197, 94, 0.12) !important;
+    }
+
+    .theme-yellow {
+      --status-border: #eab308 !important;
+      --status-bg: rgba(234, 179, 8, 0.12) !important;
+    }
+
+    .theme-red {
+      --status-border: #ef4444 !important;
+      --status-bg: rgba(239, 68, 68, 0.12) !important;
     }
 
     * {
@@ -54,7 +74,7 @@
       width: 100%;
       max-width: 460px;
       border-radius: 16px;
-      padding: 12px;
+      padding: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
@@ -63,11 +83,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--text-main);
     }
 
@@ -75,9 +95,9 @@
       background: var(--section-bg);
       border: 2px solid var(--border);
       color: var(--text-main);
-      padding: 6px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -90,14 +110,14 @@
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 8px;
     }
 
-    /* 3-Column Grid Layout for Remote Switch, Stops, Est. Time & Vehicle Expenses */
+    /* 3-Column Grid Layout */
     .triple-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
     }
 
     .full-width {
@@ -105,11 +125,11 @@
     }
 
     .section-title {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-main);
-      margin-top: 8px;
-      padding-bottom: 6px;
+      margin-top: 4px;
+      padding-bottom: 2px;
       border-bottom: 2px solid var(--border);
     }
 
@@ -120,9 +140,9 @@
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
       color: var(--text-main);
       white-space: nowrap;
     }
@@ -136,20 +156,21 @@
 
     .prefix, .suffix {
       position: absolute;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 1.1rem;
+      font-weight: 700;
       color: var(--text-muted);
       z-index: 1;
     }
 
     .prefix { left: 8px; }
-    .suffix { right: 6px; }
+    .suffix { right: 8px; }
 
+    /* Doubled Input Font Size */
     input[type="number"] {
       width: 100%;
-      font-size: 1.1rem;
-      font-weight: 700;
-      padding: 10px 4px;
+      font-size: 1.75rem;
+      font-weight: 800;
+      padding: 6px 4px;
       border: 2px solid var(--border);
       border-radius: 10px;
       outline: none;
@@ -161,11 +182,11 @@
       border-color: var(--primary);
     }
 
-    .has-prefix { padding-left: 20px !important; }
-    .has-suffix { padding-right: 32px !important; }
-    .has-both { padding-left: 20px !important; padding-right: 32px !important; }
+    .has-prefix { padding-left: 24px !important; }
+    .has-suffix { padding-right: 36px !important; }
+    .has-both { padding-left: 24px !important; padding-right: 48px !important; }
 
-    /* Plus/Minus Stepper Controls */
+    /* Stepper Container with Right-Aligned Controls */
     .stepper-wrapper {
       display: flex;
       align-items: center;
@@ -173,37 +194,16 @@
       border-radius: 10px;
       background: var(--input-bg);
       overflow: hidden;
-      height: 44px;
+      height: 52px;
       position: relative;
       width: 100%;
-    }
-
-    .stepper-btn {
-      background: var(--card-bg);
-      color: var(--text-main);
-      border: none;
-      width: 32px;
-      height: 100%;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      z-index: 2;
-      flex-shrink: 0;
-    }
-
-    .stepper-btn:active {
-      background: var(--border);
     }
 
     .stepper-wrapper input[type="number"] {
       border: none;
       border-radius: 0;
-      text-align: center;
-      padding: 0;
+      text-align: left;
+      padding-left: 8px;
       height: 100%;
       -moz-appearance: textfield;
       flex-grow: 1;
@@ -215,11 +215,42 @@
       margin: 0;
     }
 
-    /* Padding adjustments for input fields inside steppers */
-    .stepper-wrapper .has-prefix { padding-left: 18px !important; text-align: left !important; }
-    .stepper-wrapper .has-suffix { padding-right: 24px !important; text-align: left !important; }
-    .stepper-wrapper .prefix { left: 36px; }
-    .stepper-wrapper .suffix { right: 36px; }
+    /* Right-aligned Button Group */
+    .btn-group-right {
+      display: flex;
+      height: 100%;
+      border-left: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    /* Doubled Plus/Minus Buttons */
+    .stepper-btn {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: none;
+      width: 44px;
+      height: 100%;
+      font-size: 1.6rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .stepper-btn:first-child {
+      border-right: 1px solid var(--border);
+    }
+
+    .stepper-btn:active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Dynamic Prefix/Suffix positioning inside steppers */
+    .stepper-wrapper .prefix { left: 8px; }
+    .stepper-wrapper .suffix { right: 94px; }
 
     /* Toggle Switch Styling */
     .switch-wrapper {
@@ -229,13 +260,13 @@
       background: var(--input-bg);
       border: 2px solid var(--border);
       border-radius: 10px;
-      height: 44px;
+      height: 52px;
       padding: 0 8px;
     }
 
     .switch-label-text {
-      font-size: 0.8rem;
-      font-weight: 700;
+      font-size: 0.85rem;
+      font-weight: 800;
       color: var(--text-muted);
     }
 
@@ -246,8 +277,8 @@
     .switch {
       position: relative;
       display: inline-block;
-      width: 40px;
-      height: 22px;
+      width: 42px;
+      height: 24px;
       flex-shrink: 0;
     }
 
@@ -260,20 +291,17 @@
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: var(--border);
       transition: .2s;
-      border-radius: 22px;
+      border-radius: 24px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
+      height: 18px;
+      width: 18px;
       left: 3px;
       bottom: 3px;
       background-color: white;
@@ -289,22 +317,23 @@
       transform: translateX(18px);
     }
 
-        /* Single Column Results Section */
+      /* Results Container with Dynamic Status Colors */
     .results-container {
-      margin-top: 20px;
-      background: var(--section-bg);
-      border: 2px solid var(--border);
+      margin-top: 10px;
+      background: var(--status-bg);
+      border: 3px solid var(--status-border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 10px 14px;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .result-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
+      padding: 4px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
 
     .result-row:last-child {
@@ -312,8 +341,8 @@
     }
 
     .result-row.main-result {
-      margin-top: 8px;
-      padding-top: 12px;
+      margin-top: 4px;
+      padding-top: 6px;
       border-top: 2px dashed var(--border);
     }
 
@@ -323,59 +352,25 @@
     }
 
     .result-val {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
     }
 
     .net-profit {
-      font-size: 1.75rem;
-      font-weight: 800;
+      font-size: 1.85rem;
+      font-weight: 900;
     }
 
     .profit-positive { color: var(--profit-green); }
     .profit-negative { color: var(--loss-red); }
-    .hourly-rate-highlight { color: var(--primary); font-size: 1.25rem;}
-
-    /* Status Badge Styling */
-    .status-badge {
-      margin-top: 12px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 1rem;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-green {
-      background-color: rgba(34, 197, 94, 0.15);
-      border: 2px solid #22c55e;
-      color: #22c55e;
-    }
-
-    .status-yellow {
-      background-color: rgba(234, 179, 8, 0.15);
-      border: 2px solid #eab308;
-      color: #eab308;
-    }
-
-    .status-red {
-      background-color: rgba(239, 68, 68, 0.15);
-      border: 2px solid #ef4444;
-      color: #ef4444;
-    }
+    .hourly-rate-highlight { color: var(--primary); font-size: 1.2rem;}
 
     .save-badge {
       display: block;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      margin-top: 12px;
+      margin-top: 6px;
     }
   </style>
 </head>
@@ -390,7 +385,7 @@
       </button>
     </div>
 
-    <!-- Row 1: Offer Pay & Distance (With Stepper Buttons) -->
+    <!-- Row 1: Offer Pay & Distance (With Right-Side Stepper Buttons) -->
     <div class="form-grid">
       <div class="section-title full-width">Trip Details</div>
 
@@ -398,10 +393,12 @@
       <div class="input-group">
         <label for="payout">Offer Pay</label>
         <div class="stepper-wrapper">
-          <button type="button" class="stepper-btn" id="payout-minus">-</button>
           <span class="prefix">$</span>
           <input type="number" id="payout" class="has-prefix" step="0.01" value="7.50" placeholder="0.00">
-          <button type="button" class="stepper-btn" id="payout-plus">+</button>
+          <div class="btn-group-right">
+            <button type="button" class="stepper-btn" id="payout-minus">-</button>
+            <button type="button" class="stepper-btn" id="payout-plus">+</button>
+          </div>
         </div>
       </div>
 
@@ -409,16 +406,18 @@
       <div class="input-group">
         <label for="miles">Distance</label>
         <div class="stepper-wrapper">
-          <button type="button" class="stepper-btn" id="miles-minus">-</button>
           <input type="number" id="miles" class="has-suffix" step="0.1" value="3.0" placeholder="0">
           <span class="suffix">mi</span>
-          <button type="button" class="stepper-btn" id="miles-plus">+</button>
+          <div class="btn-group-right">
+            <button type="button" class="stepper-btn" id="miles-minus">-</button>
+            <button type="button" class="stepper-btn" id="miles-plus">+</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Row 2: 3-Column Layout (Remote Toggle, Stops, Est. Time) -->
-    <div class="triple-grid" style="margin-top: 12px;">
+    <div class="triple-grid" style="margin-top: 8px;">
       <!-- Remote Location Toggle (+10% OFF / +50% ON) -->
       <div class="input-group">
         <label for="remote-toggle">Remote Drop</label>
@@ -431,37 +430,39 @@
         </div>
       </div>
 
-      <!-- Extra Stops with Plus/Minus (Defaulted to 1) -->
+      <!-- Extra Stops with Right-Side Plus/Minus -->
       <div class="input-group">
         <label for="stops">Stops (+10m)</label>
         <div class="stepper-wrapper">
-          <button type="button" class="stepper-btn" id="stops-minus">-</button>
           <input type="number" id="stops" min="0" value="1" readonly>
-          <button type="button" class="stepper-btn" id="stops-plus">+</button>
+          <div class="btn-group-right">
+            <button type="button" class="stepper-btn" id="stops-minus">-</button>
+            <button type="button" class="stepper-btn" id="stops-plus">+</button>
+          </div>
         </div>
       </div>
 
-      <!-- Estimated Time (Calculated dynamically) -->
+      <!-- Estimated Time -->
       <div class="input-group">
         <label for="time">Est. Time</label>
         <div class="input-wrapper">
-          <input type="number" id="time" class="has-suffix" step="1" placeholder="0">
+          <input type="number" id="time" class="has-suffix" step="1" placeholder="0" style="height: 52px;">
           <span class="suffix">min</span>
         </div>
       </div>
     </div>
 
     <!-- Section Header -->
-    <div class="section-title" style="margin-top: 12px;">Vehicle Expenses (Auto-Saved)</div>
+    <div class="section-title" style="margin-top: 8px;">Vehicle Expenses (Auto-Saved)</div>
 
     <!-- Row 3: 3-Column Layout for Vehicle Expenses -->
-    <div class="triple-grid" style="margin-top: 12px;">
+    <div class="triple-grid" style="margin-top: 8px;">
       <!-- Gas Price -->
       <div class="input-group">
         <label for="gasPrice">Gas Price</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
-          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="4.19" placeholder="0.00">
+          <input type="number" id="gasPrice" class="has-prefix auto-save" step="0.01" value="4.19" placeholder="0.00" style="font-size: 1.25rem;">
         </div>
       </div>
 
@@ -469,7 +470,7 @@
       <div class="input-group">
         <label for="mpg">Vehicle MPG</label>
         <div class="input-wrapper">
-          <input type="number" id="mpg" class="has-suffix auto-save" step="0.1" value="13.0" placeholder="0">
+          <input type="number" id="mpg" class="has-suffix auto-save" step="0.1" value="13.0" placeholder="0" style="font-size: 1.25rem;">
           <span class="suffix">mpg</span>
         </div>
       </div>
@@ -479,14 +480,14 @@
         <label for="maint">Wear Cost</label>
         <div class="input-wrapper">
           <span class="prefix">$</span>
-          <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00">
+          <input type="number" id="maint" class="has-both auto-save" step="0.01" value="0.10" placeholder="0.00" style="font-size: 1.25rem;">
           <span class="suffix">/mi</span>
         </div>
       </div>
     </div>
 
-    <!-- Summary Outputs (Single Column Box) -->
-    <div class="results-container">
+    <!-- Summary Outputs with Dynamic Status Border/Background -->
+    <div class="results-container" id="results-container">
       <div class="result-row">
         <span class="result-label">Total Est. Distance:</span>
         <span class="result-val" id="total-miles">0 mi</span>
@@ -510,12 +511,6 @@
       <div class="result-row main-result">
         <span class="result-label" style="color: var(--text-main); font-size: 1.1rem;">Net Profit:</span>
         <span class="net-profit profit-positive" id="net-profit">$0.00</span>
-      </div>
-
-      <!-- Traffic Light Indicator -->
-      <div id="status-badge" class="status-badge status-green">
-        <span id="status-icon">🟢</span>
-        <span id="status-text">Great Order</span>
       </div>
     </div>
     
@@ -543,16 +538,13 @@
     const mpgInput = document.getElementById('mpg');
     const maintInput = document.getElementById('maint');
 
+    const resultsContainer = document.getElementById('results-container');
     const totalMilesEl = document.getElementById('total-miles');
     const totalExpensesEl = document.getElementById('total-expenses');
     const payPerMileEl = document.getElementById('pay-per-mile');
     const grossHourlyRateEl = document.getElementById('gross-hourly-rate');
     const netHourlyRateEl = document.getElementById('net-hourly-rate');
     const netProfitEl = document.getElementById('net-profit');
-
-    const statusBadgeEl = document.getElementById('status-badge');
-    const statusIconEl = document.getElementById('status-icon');
-    const statusTextEl = document.getElementById('status-text');
 
     const themeBtn = document.getElementById('theme-btn');
     const themeIcon = document.getElementById('theme-icon');
@@ -605,7 +597,7 @@
       timeInput.value = Math.round(drivingMinutes + stopMinutes);
     }
 
-    // Dynamic Traffic Light logic tuned to real-world gig pay standards
+    // Dynamic Traffic Light logic that sets card border & background color
     function updateTrafficLight(netHourlyRate, netProfit, grossPayPerMile) {
       const isHighProfit = netProfit >= 15.00;
       const isHighHourly = netHourlyRate >= 18.00;
@@ -614,18 +606,15 @@
       const isModerateHourly = netHourlyRate >= 10.00;
       const isModeratePayPerMile = grossPayPerMile >= 1.25 && netProfit >= 1.50;
 
+      // Remove previous color themes
+      resultsContainer.classList.remove('theme-green', 'theme-yellow', 'theme-red');
+
       if (netProfit > 0 && (isHighProfit || isHighHourly || isGoodPayPerMile)) {
-        statusBadgeEl.className = 'status-badge status-green';
-        statusIconEl.textContent = '🟢';
-        statusTextEl.textContent = 'Great Order';
+        resultsContainer.classList.add('theme-green');
       } else if (netProfit > 0 && (isModerateHourly || isModeratePayPerMile)) {
-        statusBadgeEl.className = 'status-badge status-yellow';
-        statusIconEl.textContent = '🟡';
-        statusTextEl.textContent = 'Moderate Profit';
+        resultsContainer.classList.add('theme-yellow');
       } else {
-        statusBadgeEl.className = 'status-badge status-red';
-        statusIconEl.textContent = '🔴';
-        statusTextEl.textContent = 'Low Profit / Skip';
+        resultsContainer.classList.add('theme-red');
       }
     }
 
@@ -638,7 +627,6 @@
       const isRemote = remoteToggle.checked;
       const deadheadPct = isRemote ? 50 : 10;
       
-      // Update UI text for toggle indicator
       if (isRemote) {
         remoteStatusText.textContent = '+50%';
         remoteStatusText.classList.add('active');
@@ -683,7 +671,7 @@
         netProfitEl.className = 'net-profit profit-positive';
       }
 
-      // Update Green/Yellow/Red status indicator using pay-per-mile ratios
+      // Update Green/Yellow/Red dynamic border & background tint
       updateTrafficLight(netHourlyRate, netProfit, grossPayPerMile);
 
       // Save persistent inputs automatically
